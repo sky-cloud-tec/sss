@@ -6,6 +6,7 @@ require (
 	github.com/cortexproject/cortex v0.3.0 // indirect
 	github.com/fortytw2/leaktest v1.3.0 // indirect
 	github.com/grafana/loki v6.7.8+incompatible
+	github.com/olivere/elastic v6.2.26+incompatible
 	github.com/prometheus/common v0.7.0
 	github.com/songtianyi/rrframework v0.0.0-20180901111106-4caefe307b3f
 	github.com/urfave/cli v1.22.1

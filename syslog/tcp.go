@@ -72,7 +72,7 @@ func (s *TCPCollector) handleConnection(conn net.Conn, c chan<- *common.Message)
 		b, err := reader.ReadByte()
 		if err != nil {
 			if neterr, ok := err.(net.Error); ok && neterr.Timeout() {
-				logs.Error("tcpConnReadTimeout")
+				logs.Notice("tcpConnReadTimeout")
 			} else if err == io.EOF {
 				logs.Error("tcpConnReadEOF")
 			} else {
@@ -86,7 +86,6 @@ func (s *TCPCollector) handleConnection(conn net.Conn, c chan<- *common.Message)
 
 		// Log line available?
 		if match {
-			// fmt.Println(string(b))
 			if parser.Parse(bytes.NewBufferString(log).Bytes()) {
 				c <- &common.Message{
 					Text:          string(parser.Raw),
@@ -94,6 +93,9 @@ func (s *TCPCollector) handleConnection(conn net.Conn, c chan<- *common.Message)
 					ReceptionTime: time.Now().UTC(),
 					SourceIP:      conn.RemoteAddr().String(),
 				}
+			} else {
+				// Zero tolerance :)
+				panic(err)
 			}
 		}
 

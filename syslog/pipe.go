@@ -1,6 +1,8 @@
 package syslog
 
 import (
+	"fmt"
+
 	"github.com/sky-cloud-tec/sss/common"
 	"github.com/sky-cloud-tec/sss/consumers"
 	"github.com/sky-cloud-tec/sss/filters"
@@ -40,6 +42,7 @@ func (p *Pipe) Open() {
 	for {
 		select {
 		case msg := <-p.c:
+			fmt.Println(msg)
 			if len(p.filters) == 0 {
 				// no filter applied send all msgs to consumers
 				for _, consumer := range p.consumers {

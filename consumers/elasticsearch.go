@@ -1,9 +1,11 @@
 package consumers
 
 import (
+	"context"
+
+	"github.com/olivere/elastic"
 	"github.com/sky-cloud-tec/sss/common"
 	"github.com/songtianyi/rrframework/logs"
-	"gopkg.in/olivere/elastic.v3"
 )
 
 type esConsumer struct {
@@ -21,7 +23,7 @@ func NewESConsumer(url, username, password string) (Consumer, error) {
 		return nil, err
 	}
 	// Ping the Elasticsearch server to get e.g. the version number
-	info, code, err := client.Ping(url).Do()
+	info, code, err := client.Ping(url).Do(context.Background())
 	if err != nil {
 		// Handle error
 		return nil, err
@@ -53,8 +55,9 @@ func (e *esConsumer) do(msg *common.Message) error {
 	put2, err := e.client.Index().
 		Index("firewall_syslog").
 		Type("syslog").
-		BodyString(msg.Text).
-		Do()
+		// BodyString(msg.Text).
+		BodyJson(msg.Parsed).
+		Do(context.Background())
 	if err != nil {
 		return err
 	}

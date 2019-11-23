@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/sky-cloud-tec/sss/common"
+	"github.com/sky-cloud-tec/sss/consumers"
 	"github.com/sky-cloud-tec/sss/filters"
 	"github.com/sky-cloud-tec/sss/syslog"
 	"github.com/songtianyi/rrframework/logs"
@@ -24,15 +25,15 @@ func initLogger() error {
 }
 
 func initSyslog(c *cli.Context, p *syslog.Pipe) error {
-	if c.IsSet("lt") {
-		s, err := syslog.NewCollector("tcp", common.AppConfigInstance.SrvCfg.TCPAddr+c.String("rfc3164-port"), "rfc3164", nil)
+	if c.IsSet("listen-tcp") {
+		s, err := syslog.NewCollector("tcp", common.AppConfigInstance.SrvCfg.TCPAddr+":"+c.String("rfc3164-port"), "rfc3164", nil)
 		if err != nil {
 			return err
 		}
 		if err := s.Start(p.C()); err != nil {
 			return err
 		}
-		s, err = syslog.NewCollector("tcp", common.AppConfigInstance.SrvCfg.TCPAddr+c.String("rfc5424-port"), "rfc5424", nil)
+		s, err = syslog.NewCollector("tcp", common.AppConfigInstance.SrvCfg.TCPAddr+":"+c.String("rfc5424-port"), "rfc5424", nil)
 		if err != nil {
 			return err
 		}
@@ -40,15 +41,15 @@ func initSyslog(c *cli.Context, p *syslog.Pipe) error {
 			return err
 		}
 	}
-	if c.IsSet("lu") {
-		s, err := syslog.NewCollector("udp", common.AppConfigInstance.SrvCfg.UDPAddr+c.String("rfc3164-port"), "rfc3164", nil)
+	if c.IsSet("listen-udp") {
+		s, err := syslog.NewCollector("udp", common.AppConfigInstance.SrvCfg.UDPAddr+":"+c.String("rfc3164-port"), "rfc3164", nil)
 		if err != nil {
 			return err
 		}
 		if err := s.Start(p.C()); err != nil {
 			return err
 		}
-		s, err = syslog.NewCollector("udp", common.AppConfigInstance.SrvCfg.UDPAddr+c.String("rfc5424-port"), "rfc5424", nil)
+		s, err = syslog.NewCollector("udp", common.AppConfigInstance.SrvCfg.UDPAddr+":"+c.String("rfc5424-port"), "rfc5424", nil)
 		if err != nil {
 			return err
 		}
@@ -144,10 +145,10 @@ func main() {
 			Required: false,
 		},
 		cli.StringFlag{
-			Name: "loki-consumer-url",
-			Usage: "loki url http://10.110.138.23:3100",
+			Name:     "loki-consumer-url",
+			Usage:    "loki url http://10.110.138.23:3100",
 			Required: false,
-		}
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 		// init logger
@@ -162,11 +163,22 @@ func main() {
 			return err
 		}
 		// init consumer
-		if c.IsSet("loki-consumer-url") {
-			loki, err := consumers.NewLokiConsumer(c.String("loki-conumser-url"))
+		// if c.IsSet("loki-consumer-url") {
+		// 	loki, err := consumers.NewLokiConsumer(c.String("loki-conumser-url"))
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// }
+		if c.IsSet("es-consumer-url") {
+			es, err := consumers.NewESConsumer(
+				c.String("es-consumer-url"),
+				c.String("es-consumer-username"),
+				c.String("es-consumer-password"))
 			if err != nil {
 				return err
 			}
+			p.Register(es)
+			go es.Consume()
 		}
 		p.Open()
 		return nil

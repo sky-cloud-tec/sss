@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/sky-cloud-tec/sss/common"
+	"github.com/songtianyi/rrframework/logs"
 )
 
 // Collector specifies the interface all network collectors must implement.
@@ -19,6 +20,7 @@ type Collector interface {
 // to the given inteface on Start(). If config is non-nil, a secure Collector will
 // be returned. Secure Collectors require the protocol be TCP.
 func NewCollector(proto, iface, format string, tlsConfig *tls.Config) (Collector, error) {
+	logs.Info("creating collector", proto, iface, format, tlsConfig)
 	if strings.ToLower(proto) == "tcp" {
 		return &TCPCollector{
 			iface:     iface,

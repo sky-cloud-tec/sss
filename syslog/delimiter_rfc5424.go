@@ -1,3 +1,18 @@
+// Simple syslog server.
+// Copyright (C) 2019  sky-cloud.net
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 package syslog
 
 import (
@@ -6,8 +21,8 @@ import (
 )
 
 const (
-	// SYSLOG_DELIMITER indicates the start of a syslog line
-	SYSLOG_DELIMITER = `<[0-9]{1,3}>[0-9]\s`
+	// RFC5424DelimiterPrefix indicates the start of a syslog line
+	RFC5424DelimiterPrefix = `<[0-9]{1,3}>[0-9]\s`
 )
 
 var syslogRegex *regexp.Regexp
@@ -15,9 +30,9 @@ var startRegex *regexp.Regexp
 var runRegex *regexp.Regexp
 
 func init() {
-	syslogRegex = regexp.MustCompile(SYSLOG_DELIMITER)
-	startRegex = regexp.MustCompile(SYSLOG_DELIMITER + `$`)
-	runRegex = regexp.MustCompile(`\n` + SYSLOG_DELIMITER)
+	syslogRegex = regexp.MustCompile(RFC5424DelimiterPrefix)
+	startRegex = regexp.MustCompile(RFC5424DelimiterPrefix + `$`)
+	runRegex = regexp.MustCompile(`\n` + RFC5424DelimiterPrefix)
 }
 
 // A RFC5424Delimiter detects when Syslog lines start.

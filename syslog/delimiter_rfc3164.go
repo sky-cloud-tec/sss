@@ -1,3 +1,18 @@
+// Simple syslog server.
+// Copyright (C) 2019  sky-cloud.net
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 package syslog
 
 import (
@@ -6,8 +21,8 @@ import (
 )
 
 const (
-	// RFC3164_DELIMITER indicates the start of a syslog line
-	RFC3164_DELIMITER = `<[0-9]{1,3}>`
+	// RFC3164DelimiterPrefix indicates the start of a syslog line
+	RFC3164DelimiterPrefix = `<[0-9]{1,3}>`
 )
 
 var rfc3164Regex *regexp.Regexp
@@ -15,9 +30,9 @@ var rfc3164startRegex *regexp.Regexp
 var rfc3164runRegex *regexp.Regexp
 
 func init() {
-	rfc3164Regex = regexp.MustCompile(RFC3164_DELIMITER)
-	rfc3164startRegex = regexp.MustCompile(RFC3164_DELIMITER + `$`)
-	rfc3164runRegex = regexp.MustCompile(`\n` + RFC3164_DELIMITER)
+	rfc3164Regex = regexp.MustCompile(RFC3164DelimiterPrefix)
+	rfc3164startRegex = regexp.MustCompile(RFC3164DelimiterPrefix + `$`)
+	rfc3164runRegex = regexp.MustCompile(`\n` + RFC3164DelimiterPrefix)
 }
 
 // A RFC3164Delimiter detects when Syslog lines start.

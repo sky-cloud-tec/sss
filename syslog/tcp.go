@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"strings"
 	"time"
 
 	"github.com/sky-cloud-tec/sss/common"
@@ -87,7 +88,7 @@ func (s *TCPCollector) handleConnection(conn net.Conn, c chan<- *common.Message)
 		b, err := reader.ReadByte()
 		if err != nil {
 			if neterr, ok := err.(net.Error); ok && neterr.Timeout() {
-				logs.Notice("tcpConnReadTimeout")
+				// logs.Notice("tcpConnReadTimeout")
 			} else if err == io.EOF {
 				logs.Error("tcpConnReadEOF")
 			} else {
@@ -106,7 +107,7 @@ func (s *TCPCollector) handleConnection(conn net.Conn, c chan<- *common.Message)
 					Text:          string(parser.Raw),
 					Parsed:        parser.Result,
 					ReceptionTime: time.Now().UTC(),
-					SourceIP:      conn.RemoteAddr().String(),
+					SourceIP:      strings.Split(conn.RemoteAddr().String(), ":")[0],
 				}
 			} else {
 				// Zero tolerance :)

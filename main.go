@@ -163,12 +163,14 @@ func main() {
 			return err
 		}
 		// init consumer
-		// if c.IsSet("loki-consumer-url") {
-		// 	loki, err := consumers.NewLokiConsumer(c.String("loki-conumser-url"))
-		// 	if err != nil {
-		// 		return err
-		// 	}
-		// }
+		if c.IsSet("loki-consumer-url") {
+			loki, err := consumers.NewLokiConsumer(c.String("loki-consumer-url"))
+			if err != nil {
+				return err
+			}
+			p.Register(loki)
+			go loki.Consume()
+		}
 		if c.IsSet("es-consumer-url") {
 			es, err := consumers.NewESConsumer(
 				c.String("es-consumer-url"),

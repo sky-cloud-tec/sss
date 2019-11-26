@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/sky-cloud-tec/sss/common"
+	"github.com/songtianyi/rrframework/logs"
 )
 
 // UDPCollector represents a network collector that accepts UDP packets.
@@ -51,7 +52,7 @@ func (s *UDPCollector) Start(c chan<- *common.Message) error {
 				continue
 			}
 			log := strings.Trim(string(buf[:n]), "\r\n")
-			// fmt.Println(log)
+			logs.Debug("[raw]", log)
 			if parser.Parse(bytes.NewBufferString(log).Bytes()) {
 				c <- &common.Message{
 					Text:          log,
@@ -59,6 +60,9 @@ func (s *UDPCollector) Start(c chan<- *common.Message) error {
 					ReceptionTime: time.Now().UTC(),
 					SourceIP:      addr.String(),
 				}
+			} else {
+				logs.Error("parse raw msg", log, "error")
+				panic(err)
 			}
 		}
 	}()

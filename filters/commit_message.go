@@ -37,6 +37,7 @@ func (c *CommitMessage) Match(msg *common.Message) bool {
 	return strings.Contains(message, "'write memory' command") || // cisco asa
 		strings.Contains(message, "commit complete") || // juniper srx
 		strings.Contains(strings.ToLower(message), "attribute configured") || // fortinet
+		strings.Contains(message, "Configuration is changed") || // fortinet
 		strings.Contains(strings.ToLower(message), "configured from") || // NX-OS || IOS
 		(strings.Contains(message, "commit") && strings.Contains(message, "Submitted"))
 }

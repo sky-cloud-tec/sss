@@ -31,7 +31,7 @@ import (
 
 const (
 	newlineTimeout = time.Duration(1000 * time.Millisecond)
-	msgBufSize     = 256
+	msgBufSize     = 1000
 )
 
 // TCPCollector represents a network collector that accepts and handler TCP connections.
@@ -102,6 +102,7 @@ func (s *TCPCollector) handleConnection(conn net.Conn, c chan<- *common.Message)
 
 		// Log line available?
 		if match {
+			logs.Debug("[raw]", log)
 			if parser.Parse(bytes.NewBufferString(log).Bytes()) {
 				c <- &common.Message{
 					Text:          string(parser.Raw),
@@ -111,6 +112,7 @@ func (s *TCPCollector) handleConnection(conn net.Conn, c chan<- *common.Message)
 				}
 			} else {
 				// Zero tolerance :)
+				logs.Error("parse raw msg", log, "error")
 				panic(err)
 			}
 		}

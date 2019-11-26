@@ -56,9 +56,9 @@ func (p *Pipe) Open() {
 	for {
 		select {
 		case msg := <-p.c:
-			logs.Debug(msg)
 			if len(p.filters) == 0 {
 				// no filter applied send all msgs to consumers
+				logs.Debug("[accept]", msg)
 				for _, consumer := range p.consumers {
 					consumer.C() <- msg
 				}
@@ -67,6 +67,7 @@ func (p *Pipe) Open() {
 			for _, filter := range p.filters {
 				// filter | filter
 				if filter.Match(msg) {
+					logs.Debug("[accept]", msg)
 					// send to consumers
 					for _, consumer := range p.consumers {
 						consumer.C() <- msg

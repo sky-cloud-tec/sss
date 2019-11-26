@@ -57,7 +57,7 @@ func (s *UDPCollector) Start(c chan<- *common.Message) error {
 				c <- &common.Message{
 					Text:          log,
 					Parsed:        parser.Result,
-					ReceptionTime: time.Now().UTC(),
+					ReceptionTime: time.Now(),
 					SourceIP:      addr.String(),
 				}
 			} else {

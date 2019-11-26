@@ -107,7 +107,7 @@ func (s *TCPCollector) handleConnection(conn net.Conn, c chan<- *common.Message)
 				c <- &common.Message{
 					Text:          string(parser.Raw),
 					Parsed:        parser.Result,
-					ReceptionTime: time.Now().UTC(),
+					ReceptionTime: time.Now(),
 					SourceIP:      strings.Split(conn.RemoteAddr().String(), ":")[0],
 				}
 			} else {

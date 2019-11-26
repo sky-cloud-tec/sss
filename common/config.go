@@ -27,6 +27,7 @@ type ServerConfig struct {
 	UDPAddr string
 	RFC3164 string // port num for syslog format RFC3164
 	RFC5424 string //
+	Unknown string
 	Filters []string
 }
 

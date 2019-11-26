@@ -21,8 +21,8 @@ import (
 )
 
 var (
-	fmtsByStandard    = []string{"rfc5424", "rfc3164"}
-	fmtsByStandardNum = []string{"5424", "3164"}
+	fmtsByStandard    = []string{"rfc5424", "rfc3164", "unknown"}
+	fmtsByStandardNum = []string{"5424", "3164", "unknown"}
 )
 
 // ValidFormat returns if the given format matches one of the possible formats.
@@ -61,6 +61,9 @@ func NewParser(f string) (*Parser, error) {
 		p.newRFC3164Parser()
 		p.delimiter = NewRFC3164Delimiter(msgBufSize)
 		break
+	case "unknown":
+		p.newUnknownParser()
+		p.delimiter = NewRFC3164Delimiter(msgBufSize)
 	}
 	return p, nil
 }

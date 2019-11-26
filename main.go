@@ -40,6 +40,13 @@ func initSyslog(c *cli.Context, p *syslog.Pipe) error {
 		if err := s.Start(p.C()); err != nil {
 			return err
 		}
+		s, err = syslog.NewCollector("tcp", common.AppConfigInstance.SrvCfg.TCPAddr+":"+c.String("unknown-port"), "unknown", nil)
+		if err != nil {
+			return err
+		}
+		if err := s.Start(p.C()); err != nil {
+			return err
+		}
 	}
 	if c.IsSet("listen-udp") {
 		s, err := syslog.NewCollector("udp", common.AppConfigInstance.SrvCfg.UDPAddr+":"+c.String("rfc3164-port"), "rfc3164", nil)
@@ -50,6 +57,13 @@ func initSyslog(c *cli.Context, p *syslog.Pipe) error {
 			return err
 		}
 		s, err = syslog.NewCollector("udp", common.AppConfigInstance.SrvCfg.UDPAddr+":"+c.String("rfc5424-port"), "rfc5424", nil)
+		if err != nil {
+			return err
+		}
+		if err := s.Start(p.C()); err != nil {
+			return err
+		}
+		s, err = syslog.NewCollector("udp", common.AppConfigInstance.SrvCfg.UDPAddr+":"+c.String("unknown-port"), "unknown", nil)
 		if err != nil {
 			return err
 		}
@@ -123,6 +137,12 @@ func main() {
 			Value:       "5424",
 			Usage:       "port num for syslog format rfc5424",
 			Destination: &common.AppConfigInstance.SrvCfg.RFC5424,
+		},
+		cli.StringFlag{
+			Name:        "unknown-port",
+			Value:       "6666",
+			Usage:       "port num for undocumented syslog format",
+			Destination: &common.AppConfigInstance.SrvCfg.Unknown,
 		},
 		cli.StringSliceFlag{
 			Name:     "filters",

@@ -22,7 +22,7 @@ import (
 
 const (
 	// RFC3164DelimiterPrefix indicates the start of a syslog line
-	RFC3164DelimiterPrefix = `<[0-9]{1,3}>`
+	RFC3164DelimiterPrefix = `<-?[0-9]{1,3}>`
 )
 
 var rfc3164Regex *regexp.Regexp

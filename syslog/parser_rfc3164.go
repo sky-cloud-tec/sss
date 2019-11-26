@@ -21,7 +21,6 @@ import (
 )
 
 // RFC3164 represents a parser for RFC3164-compliant log messages
-// BUT made some modifications to make it compatible with juniper syslog messages
 type RFC3164 struct {
 	matcher *regexp.Regexp
 }
@@ -32,8 +31,8 @@ func (p *Parser) newRFC3164Parser() {
 }
 
 func (s *RFC3164) compileMatcher() {
-	pri := `<([0-9]{1,3})>`
-	ts := `([A-Za-z]+\s\d+(\s\d+)?\s\d+:\d+:\d+:\s)` // with or without year
+	pri := `<(-?[0-9]{1,3})>`
+	ts := `([A-Za-z]+\s\d+(?:\s\d+)?\s\d+:\d+:\d+:\s)` // with or without year
 	host := `([^ ]+)`
 	msg := `(.+$)`
 	s.matcher = regexp.MustCompile(pri + ts + `?` + host + `:\s` + msg)
@@ -53,7 +52,7 @@ func (s *RFC3164) parse(raw []byte, result *map[string]interface{}) {
 		(*result)["host"] = m[3]
 		(*result)["message"] = m[4]
 	} else {
-		(*result)["host"] = m[3]
-		(*result)["message"] = m[4]
+		(*result)["host"] = m[2]
+		(*result)["message"] = m[3]
 	}
 }

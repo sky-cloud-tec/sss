@@ -1,4 +1,6 @@
-# sss
+## sss
+[![Build Status](https://travis-ci.org/sky-cloud-tec/sss.svg?branch=master)](https://travis-ci.org/sky-cloud-tec/sss)
+
 Simple syslog server
 
 ##### Build and run

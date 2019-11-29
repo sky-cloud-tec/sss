@@ -77,7 +77,7 @@ func (e *lokiConsumer) do(msg *common.Message) error {
 		Streams: make([]Stream, 0),
 	}
 	stream := Stream{
-		Labels:  map[string]string{"type": "firewall", "source": msg.SourceIP},
+		Labels:  map[string]string{"type": "firewall", "source": msg.SourceIP, "device": msg.Parsed["host"].(string)},
 		Entries: [][]string{{strconv.FormatInt(msg.ReceptionTime.UnixNano(), 10), msg.Text}},
 	}
 	pr.Streams = append(pr.Streams, stream)
